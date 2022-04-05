@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Emote List</title>
+
+</head>
+<body>
+	<h1>Current Emotes:</h1>
+	<div id="list"></div>
+	<script>
+		// Storing json data in a variable
+		const localJsonFile = "emote_list.json";
+		const list = document.getElementById('list');
+
+		// The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed,
+		// without waiting for stylesheets, images, and subframes to finish loading.
+		window.addEventListener("DOMContentLoaded", () => {
+			// Make fetch request to local.json file
+			fetch(localJsonFile)
+				.then((response) => response.json()) // and the response we get is in json format
+				.then((data) => {
+				Object.keys(data.emoji).forEach(function(eid) {
+					let el = document.createElement('p');
+					let arg = data.emoji[eid];
+
+					el.innerHTML = `<span>${arg}</span> :${eid}:`;
+
+					list.appendChild(el);
+				});
+
+				Object.keys(data.emotes).forEach(function(eid) {
+					let el = document.createElement('p');
+					let arg = data.emotes[eid];
+
+					el.innerHTML = `img src="/${arg}"> :${eid}:`;
+
+					list.appendChild(el);
+				});
+			});
+		});
+	</script>
+</body>
+</html>
