@@ -416,9 +416,10 @@ function EmotePostParsing(postContainer) {
   if (quotes.length) {
     for (let alink of quotes) {
       var clone = document.createElement('a');
+      clone.setAttribute('class', 'quotelink')
       temp.appendChild(clone);
       swapNodes(clone, alink);
-      quote_array.push([clone, alink]); // saves original quote
+      quote_array.push(alink); // saves original quote
     }
   }
 
@@ -445,10 +446,13 @@ function EmotePostParsing(postContainer) {
   //name.innerHTML = name.innerHTML.replace(/<wbr>/g, '').replace(re_emoji, function(m) {return `<span class="xae">${emoji[m.split(':')[1]]}</span>`})
   //      .replace(re_emote, function(m) {return `<img class="xae" src="${emotes_url}${emotes[m.split(':')[1]]}">`});
 
+  // Refresh
+  quotes = message.querySelectorAll('.quotelink');
+
   // Swap back
   if (quotes.length) {
-    for (i = 0; i < quote_array.length; i++) {
-      swapNodes(quote_array[i][1], quote_array[i][0]);
+    for (i = 0; i < quotes.length; i++) {
+      swapNodes(quote_array[i], quotes[i]);
     }
   }
   temp.remove();
