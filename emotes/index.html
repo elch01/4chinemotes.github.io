@@ -5,42 +5,284 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Emote List</title>
+	<style>
+#xa-em {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
 
+#xa-em-panel {
+  background: #a9acb5;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  /*box-shadow: 0 0 32px #2e3b4dd9;*/
+  pointer-events: all;
+  position: relative;
+  font-family: Arial, sans-serif;
+  user-select: none;
+  color: #000;
+}
+
+#xa-em-h {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 6px;
+  margin-top: 4px;
+  height: 22px;
+}
+
+#xa-em-x {
+  font-size: 12px;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+}
+#xa-em-x:hover {
+  color: #fff;
+}
+
+#xa-em-l {
+  display: flex;
+  max-height: 75vh;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+#xa-em-i {
+  font-size: 14px;
+  font-family: sans-serif;
+  line-height: 26px;
+}
+
+.xa-em-emote {
+  width: 32px;
+  height: 32px;
+  background: #dfe2e6;
+  margin: 2px;
+  overflow: hidden;
+  font-size: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+.xa-em-emote > * {
+  pointer-events: none;
+}
+
+.xae {
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+abbr[title] {
+  border-bottom: none !important;
+  cursor: inherit !important;
+  text-decoration: none !important;
+}
+
+#emote-select {
+  cursor: pointer;
+  float: right;
+  height: 16px;
+}
+
+#xa-em-tabs {
+	margin: 0;
+	padding: 0;
+	top: 10px;
+	left: 9px;
+	width: 100%;
+	list-style: none;
+	position: absolute;
+}
+
+.xa-em-tabitem {
+	border-radius: 3px;
+	border: 1px solid #777;
+	padding: 1px 4px;
+	float: left;
+	margin-right: 6px;
+}
+.xa-em-tabitem:hover {
+	border: 2px solid #444;
+	padding: 0 3px;
+}
+.xa-em-tabitem.selected {
+	border: 2px solid #666;
+	padding: 0 3px;
+}
+#settings {
+	position: absolute;
+	list-style: none;
+	height: 20px;
+	bottom: 6px;
+	right: 0;
+}
+
+#listalike {
+  background: #a9acb5;
+  display: flex;
+  max-height: 75vh;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+	</style>
 </head>
 <body>
-	<h1>Current Emotes:</h1>
-	<div id="list"></div>
+	<h1>Current EmoteMenu</h1>
+	<div id="xa-em-panel">
+		<ul id="xa-em-tabs">
+			<li class="xa-em-tabitem" data="emoji emotes">All</li>
+			<li class="xa-em-tabitem" data="emoji">Emoji</li>
+			<li class="xa-em-tabitem" data="emotes">Emotes</li>
+			<li class="xa-em-tabitem" data="new">New</li>
+		</ul>
+		<div id="xa-em-h"><div id="xa-em-x">Close</div></div>
+		<div id="xa-em-l"></div>
+		<div id="xa-em-i">Please do not use more than 9 as they will not show up</div>
+		<li class="xa-em-tabitem selected" id="settings">Settings</li>
+	</div>
+	<p>
+		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:">
+		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:" style="height: 32px;">
+		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:" style="height: 32px;image-rendering: -moz-crisp-edges;">
+		:nigra: lol nigers
+	</p>
+	<hr>
+	<div id="listalike">
+		<h3>Disable Emotes;</h3>
+		<input type="checkbox">
+	</div>
 	<script>
-		// Storing json data in a variable
-		const localJsonFile = "/emote_list.json";
-		const list = document.getElementById('list');
+// Storing json data in a variable
+const localJsonFile = "https://raw.githubusercontent.com/4chanmotes/4chanmotes.github.io/testing/emote_list.json";
+const list = document.getElementById('xa-em-l');
 
-		// The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed,
-		// without waiting for stylesheets, images, and subframes to finish loading.
-		window.addEventListener("DOMContentLoaded", () => {
-			// Make fetch request to local.json file
-			fetch(localJsonFile)
-				.then((response) => response.json()) // and the response we get is in json format
-				.then((data) => {
-				Object.keys(data.emoji).forEach(function(eid) {
-					let el = document.createElement('p');
-					let arg = data.emoji[eid];
+/* This is the amount of emotes/emojis per line on the menu */
+const emote_cols = 13;
+document.getElementById('xa-em-panel').style.width = (36 * emote_cols + 12) + "px";
 
-					el.innerHTML = `<span>${arg}</span> :${eid}:`;
+let emodata;
 
-					list.appendChild(el);
-				});
+document.addEventListener("click", function(e) {
+	let t/*arget*/;
 
-				Object.keys(data.emotes).forEach(function(eid) {
-					let el = document.createElement('p');
-					let arg = data.emotes[eid];
+	if (e.which != 1 || e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+		return;
+	}
 
-					el.innerHTML = `<img src="${arg}"> :${eid}:`;
+	if ((t = e.target) == document) {
+		return;
+	}
 
-					list.appendChild(el);
-				});
-			});
+	if (t.classList.contains("xa-em-tabitem") && !t.classList.contains("selected")) {
+		document.querySelector(".xa-em-tabitem.selected").className = "xa-em-tabitem";
+		t.className += " selected";
+		buildList();
+	}
+});
+
+function buildList() {
+	let tab = document.querySelector(".xa-em-tabitem.selected");
+
+	list.innerHTML = '';
+
+	if (!tab.getAttribute('data')) {
+		if (tab.id === "settings") {
+			return;
+		}
+		list.innerHTML = '<h1>Error</h1>';
+		return;
+	}
+
+	if ((tab = tab.getAttribute('data')).indexOf("emoji") >= 0) {
+		Object.keys(emodata.emoji).forEach(function(eid) {
+			let el = document.createElement('div');
+			el.className = 'xa-em-emote';
+			let arg = emodata.emoji[eid];
+
+			el.setAttribute('title', `:${eid}:`);
+			el.innerHTML = `<span>${arg}</span>`;
+
+			list.appendChild(el);
 		});
+	}
+	if (tab.indexOf("emotes") >= 0) {
+		Object.keys(emodata.emotes).forEach(function(eid) {
+			let el = document.createElement('div');
+			el.className = 'xa-em-emote';
+			let arg = emodata.emotes[eid];
+
+			el.setAttribute('title', `:${eid}:`);
+			el.innerHTML = `<img src="${arg}">`;
+
+			list.appendChild(el);
+		});
+	}
+	if (tab.indexOf("new") >= 0) {
+		Object.keys(emodata.new).forEach(function(eid) {
+			let el = document.createElement('div');
+			el.className = 'xa-em-emote';
+			let arg = emodata.new[eid];
+
+			el.setAttribute('title', `:${eid}:`);
+			el.innerHTML = `<img src="${arg}">`;
+
+			list.appendChild(el);
+		});
+	}
+}
+
+// The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed,
+// without waiting for stylesheets, images, and subframes to finish loading.
+window.addEventListener("DOMContentLoaded", () => {
+	// Make fetch request to local.json file
+	fetch(localJsonFile)
+		.then((response) => response.json()) // and the response we get is in json format
+		.then((data) => {
+			emodata = data;
+			console.log(data);
+			buildList();
+	});
+});
 	</script>
 </body>
 </html>
+<!--
+/* Removes all :emoteshit: if true*/
+const disable_all_emotes = false;
+
+/* This is the delay between new posts/entering a thread and the
+    parser running, more = less responsive but bigger stability */
+const emote_timer = 500; //milliseconds
+
+/* This is the maximum emotes/emojis per post, all other matches are removed
+    this doesn't limit emotes posted, only seen*/
+const max_emotes = 9;
+
+/* This is the amount of emotes/emojis per line on the menu */
+const emote_cols = 13;
+
+/* The url with the emotes, duh
+    4chan one is https://s.4cdn.org/image/emotes/
+    not recommended because it has no custom ones */
+const emotes_url = "https://4chanmotes.github.io/emotes/";
+
+/* JSON file with all emoji/emote names and respective filenames */
+const emotes_json = "https://4chanmotes.github.io/emote_list.json";
+
+/* This is the menu button, if you want to customize it then change this */
+const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
+
+-->
