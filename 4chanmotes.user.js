@@ -326,10 +326,10 @@ function Xchanevents() {
     if (!document.getElementById("emote-select")) {
       if (!document.querySelector("#qr select[data-name=thread]")) {
         // Put button next to Option/Subject
-        document.querySelector(".persona input[data-name=sub]").insertAdjacentHTML("afterend", menu);
+        document.querySelector(".persona input[data-name=sub]").insertAdjacentHTML("afterend", menu_emote);
       } else {
         // Put button next to thread selector
-        document.querySelector("#qr select[data-name=thread]").insertAdjacentHTML("afterend", menu);
+        document.querySelector("#qr select[data-name=thread]").insertAdjacentHTML("afterend", menu_emote);
       }
     }
   });
@@ -364,7 +364,7 @@ function Nchanevents() {
     var qr = (document.getElementById("t-help") ? document.getElementById("t-help") : document.getElementById("qrClose"));
     if (!e && qr) {
       console.log("QR opened - using native 4chan");
-      qr.insertAdjacentHTML("afterend", menu);
+      qr.insertAdjacentHTML("afterend", menu_emote);
     }
   }, emote_timer);
 
