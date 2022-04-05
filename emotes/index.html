@@ -32,12 +32,11 @@
 }
 
 #xa-em-h {
-  font-size: 18px;
-  height: 22px;
-  font-weight: bold;
   text-align: center;
+  font-weight: bold;
   margin-bottom: 6px;
   margin-top: 4px;
+  height: 22px;
 }
 
 #xa-em-x {
@@ -62,7 +61,7 @@
 #xa-em-i {
   font-size: 14px;
   font-family: sans-serif;
-  line-height: 16px;
+  line-height: 26px;
 }
 
 .xa-em-emote {
@@ -100,16 +99,14 @@ abbr[title] {
 #xa-em-tabs {
 	margin: 0;
 	padding: 0;
-	top: 10px;/* -21px;*/
+	top: 10px;
 	left: 9px;
 	width: 100%;
 	list-style: none;
-	display: flex;
 	position: absolute;
 }
 
 .xa-em-tabitem {
-	/*background: rgb(169, 172, 181);*/
 	border-radius: 3px;
 	border: 1px solid #777;
 	padding: 1px 4px;
@@ -124,21 +121,37 @@ abbr[title] {
 	border: 2px solid #666;
 	padding: 0 3px;
 }
+#settings {
+	position: absolute;
+	list-style: none;
+	height: 20px;
+	bottom: 6px;
+	right: 0;
+}
 
+#listalike {
+  background: #a9acb5;
+  display: flex;
+  max-height: 75vh;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
 	</style>
 </head>
 <body>
 	<h1>Current EmoteMenu</h1>
 	<div id="xa-em-panel">
 		<ul id="xa-em-tabs">
-			<li class="xa-em-tabitem selected" data="emoji emotes">All</li>
+			<li class="xa-em-tabitem" data="emoji emotes">All</li>
 			<li class="xa-em-tabitem" data="emoji">Emoji</li>
 			<li class="xa-em-tabitem" data="emotes">Emotes</li>
 			<li class="xa-em-tabitem" data="new">New</li>
 		</ul>
 		<div id="xa-em-h"><div id="xa-em-x">Close</div></div>
 		<div id="xa-em-l"></div>
-		<div id="xa-em-i"></div>
+		<div id="xa-em-i">Please do not use more than 9 as they will not show up</div>
+		<li class="xa-em-tabitem selected" id="settings">Settings</li>
 	</div>
 	<p>
 		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:">
@@ -146,19 +159,19 @@ abbr[title] {
 		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:" style="height: 32px;image-rendering: -moz-crisp-edges;">
 		:nigra: lol nigers
 	</p>
+	<hr>
+	<div id="listalike">
+		<h3>Disable Emotes;</h3>
+		<input type="checkbox">
+	</div>
 	<script>
 // Storing json data in a variable
-const localJsonFile = "https://4chanmotes.github.io/emote_list.json";
+const localJsonFile = "https://raw.githubusercontent.com/4chanmotes/4chanmotes.github.io/testing/emote_list.json";
 const list = document.getElementById('xa-em-l');
 
 /* This is the amount of emotes/emojis per line on the menu */
 const emote_cols = 13;
 document.getElementById('xa-em-panel').style.width = (36 * emote_cols + 12) + "px";
-
-/* This is the maximum emotes/emojis per post, all other matches are removed
-	this doesn't limit emotes posted, only seen*/
-const max_emotes = 9;
-document.getElementById('xa-em-i').innerHTML = "Please do not use more than " + max_emotes + " as they will not show up";
 
 let emodata;
 
@@ -181,16 +194,19 @@ document.addEventListener("click", function(e) {
 });
 
 function buildList() {
-	let tab = document.querySelector(".xa-em-tabitem.selected").getAttribute('data');
+	let tab = document.querySelector(".xa-em-tabitem.selected");
 
 	list.innerHTML = '';
 
-	if (!tab) {
+	if (!tab.getAttribute('data')) {
+		if (tab.id === "settings") {
+			return;
+		}
 		list.innerHTML = '<h1>Error</h1>';
 		return;
 	}
-	
-	if (tab.indexOf("emoji") >= 0) {
+
+	if ((tab = tab.getAttribute('data')).indexOf("emoji") >= 0) {
 		Object.keys(emodata.emoji).forEach(function(eid) {
 			let el = document.createElement('div');
 			el.className = 'xa-em-emote';
@@ -243,3 +259,30 @@ window.addEventListener("DOMContentLoaded", () => {
 	</script>
 </body>
 </html>
+<!--
+/* Removes all :emoteshit: if true*/
+const disable_all_emotes = false;
+
+/* This is the delay between new posts/entering a thread and the
+    parser running, more = less responsive but bigger stability */
+const emote_timer = 500; //milliseconds
+
+/* This is the maximum emotes/emojis per post, all other matches are removed
+    this doesn't limit emotes posted, only seen*/
+const max_emotes = 9;
+
+/* This is the amount of emotes/emojis per line on the menu */
+const emote_cols = 13;
+
+/* The url with the emotes, duh
+    4chan one is https://s.4cdn.org/image/emotes/
+    not recommended because it has no custom ones */
+const emotes_url = "https://4chanmotes.github.io/emotes/";
+
+/* JSON file with all emoji/emote names and respective filenames */
+const emotes_json = "https://4chanmotes.github.io/emote_list.json";
+
+/* This is the menu button, if you want to customize it then change this */
+const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
+
+-->

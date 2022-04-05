@@ -1,12 +1,21 @@
 // ==UserScript==
 // @name        4chan(X too) Emotes
 // @namespace   4chanmotes
-// @version     0.5.8
+// @version     0.5.9
 // @description 2022 April Fool's 4chan (X too) permanent support
 // @match       *://*.4chan.org/*
 // @match       *://*.4channel.org/*
 // @run-at      document-idle
+// @grant       GM_getValue
+// @grant       GM_setValue
+// @grant       GM_listValues
+// @grant       GM_deleteValue
 // @grant       GM_xmlhttpRequest
+
+// @grant       GM.getValue
+// @grant       GM.setValue
+// @grant       GM.listValues
+// @grant       GM.deleteValue
 // @grant       GM.xmlHttpRequest
 // @updateURL   https://4chanmotes.github.io/4chanmotes.meta.js
 // @downloadURL https://4chanmotes.github.io/4chanmotes.user.js
@@ -33,13 +42,13 @@ const emote_cols = 13;
 const emotes_url = "https://4chanmotes.github.io/emotes/";
 
 /* JSON file with all emoji/emote names and respective filenames */
-const emotes_json = "https://4chanmotes.github.io/emote_list.json";
+const emotes_json = "https://raw.githubusercontent.com/4chanmotes/4chanmotes.github.io/testing/emote_list.json";
 
 /* This is the menu button, if you want to customize it then change this */
 const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
 
 // stores the dictionaries and regex
-let using4chanx, re_emoji, re_emote, emoji, emotes;
+let using4chanx, re_emoji, re_emote, emotes_data;
 
 // Main class, everything emote posting related
 var EmoteMenu = {
@@ -90,6 +99,12 @@ var EmoteMenu = {
       return;
     }
 
+    if (t.classList.contains("xa-em-tabitem") && !t.classList.contains("selected")) {
+      document.querySelector(".xa-em-tabitem.selected").className = "xa-em-tabitem";
+      t.className += " selected";
+      self.refreshEmoteList();
+    }
+
     return;
   },
 
@@ -101,11 +116,11 @@ var EmoteMenu = {
 
     menu = document.createElement('div');
     menu.id = 'xa-em';
-    menu.innerHTML = `<div id="xa-em-panel"><div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div><div id="xa-em-l"></div><div id="xa-em-i">Please do not use more than ${max_emotes} as they will not show up</div></div>`;
+    menu.innerHTML = menu_html;
 
     document.body.appendChild(menu);
 
-    self.createEmoteList();
+    self.refreshEmoteList();
   },
 
   close: function() {
@@ -116,39 +131,63 @@ var EmoteMenu = {
     }
   },
 
-  createEmoteList: function() {
+  refreshEmoteList: function() {
     let self = EmoteMenu, list = document.getElementById('xa-em-l');
+    let tab = document.querySelector(".xa-em-tabitem.selected");
 
     if (!list) return;
     list.textContent = '';
 
-    Object.keys(emoji).forEach(function(eid) {
-      let el = document.createElement('div');
-      el.className = 'xa-em-emote';
+    if (!tab.getAttribute('data')) {
+      if (tab.id === "settings") {
+        return;
+      }
+      list.innerHTML = '<h1>Error</h1>';
+      return;
+    }
 
-      el.setAttribute('data-xa-cmd', 'use-emote');
+    if ((tab = tab.getAttribute('data')).indexOf("emoji") >= 0) {
+      Object.keys(emotes_data.emoji).forEach(function(eid) {
+        let el = document.createElement('div');
+        el.className = 'xa-em-emote';
+        el.setAttribute('data-xa-cmd', 'use-emote');
+  
+        let arg = emotes_data.emoji[eid];
+  
+        el.setAttribute('title', `:${eid}:`);
+        el.innerHTML = `<span>${arg}</span>`;
+  
+        list.appendChild(el);
+      });
+    }
+    if (tab.indexOf("emotes") >= 0) {
+      Object.keys(emotes_data.emotes).forEach(function(eid) {
+        let el = document.createElement('div');
+        el.className = 'xa-em-emote';
+        el.setAttribute('data-xa-cmd', 'use-emote');
+  
+        let arg = emotes_data.emotes[eid];
+  
+        el.setAttribute('title', `:${eid}:`);
+        el.innerHTML = `<img src="${emotes_url}${arg}">`;
+  
+        list.appendChild(el);
+      });
+    }
+    if (tab.indexOf("new") >= 0) {
+      Object.keys(emotes_data.new).forEach(function(eid) {
+        let el = document.createElement('div');
+        el.className = 'xa-em-emote';
+        el.setAttribute('data-xa-cmd', 'use-emote');
 
-      let arg = emoji[eid];
-
-      el.setAttribute('title', `:${eid}:`);
-      el.innerHTML = `<span>${arg}</span>`;
-
-      list.appendChild(el);
-    });
-
-    Object.keys(emotes).forEach(function(eid) {
-      let el = document.createElement('div');
-      el.className = 'xa-em-emote';
-
-      el.setAttribute('data-xa-cmd', 'use-emote');
-
-      let arg = emotes[eid];
-
-      el.setAttribute('title', `:${eid}:`);
-      el.innerHTML = `<img src="${emotes_url}${arg}">`;
-
-      list.appendChild(el);
-    });
+        let arg = emotes_data.new[eid];
+  
+        el.setAttribute('title', `:${eid}:`);
+        el.innerHTML = `<img src="${emotes_url}${arg}">`;
+  
+        list.appendChild(el);
+      });
+    }
   },
 
   insertEmote: function(code) {
@@ -194,11 +233,10 @@ setTimeout(function() {
       if (res.responseText !== undefined) {
         let data = JSON.parse(res.responseText);
 
-        emoji = data.emoji;
-        emotes = data.emotes;
-        re_emoji = new RegExp(":" + Object.keys(emoji).join(":|:") + ":", "g");
-        re_emote = new RegExp(":" + Object.keys(emotes).join(":|:") + ":", "g");
-        console.log(emotes);
+        emotes_data = data;
+        re_emoji = new RegExp(":" + Object.keys(data.emoji).join(":|:") + ":", "g");
+        re_emote = new RegExp(":" + Object.keys(data.emotes).join(":|:") + ":", "g");
+        console.log(data);
 
         EmoteMenu.init();
       } else {
@@ -338,14 +376,14 @@ function EmotePostParsing(postContainer) {
           if (i > max_emotes || disable_all_emotes) { // After max all others removed
             return "";
           }
-          return `<img class="xae" data-xa-cmd="use-emote" title="${m}" src="${emotes_url}${emotes[m.split(':')[1]]}">`})
+          return `<img class="xae" data-xa-cmd="use-emote" title="${m}" src="${emotes_url}${emotes_data.emotes[m.split(':')[1]]}">`})
         .replace(re_emoji, function(m) {
           /* Emoji character, title for tooltip, data- to use like in menu */
           i++;
           if (i > max_emotes || disable_all_emotes) { // After max all others removed
             return "";
           }
-          return `<abbr class="xae" data-xa-cmd="use-emote" title="${m}">${emoji[m.split(':')[1]]}</abbr>`});
+          return `<abbr class="xae" data-xa-cmd="use-emote" title="${m}">${emotes_data.emoji[m.split(':')[1]]}</abbr>`});
 
   // Refresh
   quotes = message.querySelectorAll('.tobeswitched');
@@ -362,6 +400,20 @@ function EmotePostParsing(postContainer) {
 /* These are all(maybe) the 4chanX classes that contain event listeners */
 //const event_classes = ".quotelink, .embedder, .audio, .bitchute, .clyp, .dailymotion, .gfycat, .gist, .image, .installgentoo, .liveleak, .pastebin, .peertube, .soundcloud, .streamable, .twitchtv, .twitter, .video, .vidlii, .vimeo, .vine, .vocaroo, .youtube"
 
+const menu_html = `
+<div id="xa-em-panel">
+  <ul id="xa-em-tabs">
+    <li class="xa-em-tabitem selected" data="emoji emotes">All</li>
+    <li class="xa-em-tabitem" data="emoji">Emoji</li>
+    <li class="xa-em-tabitem" data="emotes">Emotes</li>
+    <li class="xa-em-tabitem" data="new">New</li>
+  </ul>
+  <div id="xa-em-h"><div id="xa-em-x">Close</div></div>
+  <div id="xa-em-l"></div>
+  <div id="xa-em-i">Please do not use more than ${max_emotes} as they will not show up</div>
+</div>
+`;
+
 /* This is all the css used to make the menu and others */
 const css_to_add = `
 #xa-em {
@@ -377,24 +429,27 @@ const css_to_add = `
 }
 
 #xa-em-panel {
-  background: #a9acb5;
-  padding: 6px;
-  box-sizing: border-box;
-  border-radius: 0 8px 8px 8px;
-  /*box-shadow: 0 0 32px #2e3b4dd9;*/
-  pointer-events: all;
-  position: relative;
   font-family: Arial, sans-serif;
+  background: #a9acb5;
+  pointer-events: all;
   user-select: none;
   color: #000;
+
+  width: ${36 * emote_cols + 12}px;
+  box-shadow: 0 0 32px #2e3b4dd9;
+  box-sizing: border-box;
+  border-radius: 8px;
+  position: relative;
+  padding: 6px;
 }
 
 #xa-em-h {
-  font-size: 18px;
-  font-weight: bold;
   text-align: center;
+  font-weight: bold;
+  font-size: 18px;
   margin-bottom: 6px;
   margin-top: 4px;
+  height: 22px;
 }
 
 #xa-em-x {
@@ -410,8 +465,8 @@ const css_to_add = `
 
 #xa-em-l {
   display: flex;
-  max-height: 75vh;
   flex-wrap: wrap;
+  max-height: 75vh;
   overflow-y: auto;
   scrollbar-width: thin;
 }
@@ -420,7 +475,6 @@ const css_to_add = `
   font-size: 14px;
   font-family: sans-serif;
   line-height: 16px;
-  /*margin-bottom: 10px;*/
 }
 
 .xa-em-emote {
@@ -458,18 +512,26 @@ abbr[title] {
 #xa-em-tabs {
   margin: 0;
   padding: 0;
-  top: -21px;
-  left: 0;
+  top: 10px;
+  left: 9px;
+  width: 100%;
   list-style: none;
   position: absolute;
 }
 
 .xa-em-tabitem {
-  background: rgba(169, 172, 181, 0.50);
-  height: 20px;
-  padding: 3px 6px 6px;
+  border-radius: 3px;
+  border: 1px solid #777;
+  padding: 1px 4px;
   float: left;
-  border-radius: 4px 4px 0 0;
-  margin-right: 5px;
+  margin-right: 6px;
+}
+.xa-em-tabitem:hover {
+  border: 2px solid #444;
+  padding: 0 3px;
+}
+.xa-em-tabitem.selected {
+  border: 2px solid #666;
+  padding: 0 3px;
 }
 `;
