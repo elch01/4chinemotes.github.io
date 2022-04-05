@@ -42,7 +42,7 @@ const emote_cols = 13;
 const emotes_url = "https://4chanmotes.github.io/emotes/";
 
 /* JSON file with all emoji/emote names and respective filenames */
-const emotes_json = "https://raw.githubusercontent.com/4chanmotes/4chanmotes.github.io/testing/emote_list.json";
+const emotes_json = "https://4chanmotes.github.io/emote_list.json";
 
 /* This is the menu button, if you want to customize it then change this */
 const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
