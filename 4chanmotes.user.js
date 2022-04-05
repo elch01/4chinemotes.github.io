@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        4chan(X too) Emotes
 // @namespace   4chanmotes
-// @version     0.5.9b
+// @version     0.5.10
 // @description 2022 April Fool's 4chan (X too) permanent support
 // @match       *://*.4chan.org/*
 // @match       *://*.4channel.org/*
@@ -354,7 +354,7 @@ function EmotePostParsing(postContainer) {
 
   var temp = document.createElement('div');
   var quote_array = [];
-  var quotes = message.querySelectorAll('a:not(a *)');
+  var quotes = message.querySelectorAll(event_classes);
 
   if (quotes.length) {
     for (let alink of quotes) {
@@ -398,7 +398,7 @@ function EmotePostParsing(postContainer) {
 }
 
 /* These are all(maybe) the 4chanX classes that contain event listeners */
-//const event_classes = ".quotelink, .embedder, .audio, .bitchute, .clyp, .dailymotion, .gfycat, .gist, .image, .installgentoo, .liveleak, .pastebin, .peertube, .soundcloud, .streamable, .twitchtv, .twitter, .video, .vidlii, .vimeo, .vine, .vocaroo, .youtube"
+const event_classes = ".quotelink, .embedder, .audio, .bitchute, .clyp, .dailymotion, .gfycat, .gist, .image, .installgentoo, .liveleak, .pastebin, .peertube, .soundcloud, .streamable, .twitchtv, .twitter, .video, .vidlii, .vimeo, .vine, .vocaroo, .youtube"
 
 const menu_html = `
 <div id="xa-em-panel">
