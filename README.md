@@ -1,5 +1,6 @@
 # 4chanmotes
 Script to bring back 4chan emotes from April Fool's 2022
+
 This is my personal edit to remove shitpost memes no support will be provided.
 
 ### How to install
