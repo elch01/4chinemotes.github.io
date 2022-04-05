@@ -33,6 +33,7 @@
 
 #xa-em-h {
   font-size: 18px;
+  height: 22px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 6px;
@@ -130,11 +131,12 @@ abbr[title] {
 	<h1>Current EmoteMenu</h1>
 	<div id="xa-em-panel">
 		<ul id="xa-em-tabs">
-			<li class="xa-em-tabitem selected">Emoji</li>
-			<li class="xa-em-tabitem">Emotes</li>
-			<li class="xa-em-tabitem">New</li>
+			<li class="xa-em-tabitem selected" data="emoji emotes">All</li>
+			<li class="xa-em-tabitem" data="emoji">Emoji</li>
+			<li class="xa-em-tabitem" data="emotes">Emotes</li>
+			<li class="xa-em-tabitem" data="new">New</li>
 		</ul>
-		<div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div>
+		<div id="xa-em-h"><div id="xa-em-x">Close</div></div>
 		<div id="xa-em-l"></div>
 		<div id="xa-em-i"></div>
 	</div>
@@ -179,11 +181,16 @@ document.addEventListener("click", function(e) {
 });
 
 function buildList() {
-	let tab = document.querySelector(".xa-em-tabitem.selected").textContent;
+	let tab = document.querySelector(".xa-em-tabitem.selected").getAttribute('data');
 
 	list.innerHTML = '';
+
+	if (!tab) {
+		list.innerHTML = '<h1>Error</h1>';
+		return;
+	}
 	
-	if (tab === "Emoji") {
+	if (tab.indexOf("emoji") >= 0) {
 		Object.keys(emodata.emoji).forEach(function(eid) {
 			let el = document.createElement('div');
 			el.className = 'xa-em-emote';
@@ -194,11 +201,24 @@ function buildList() {
 
 			list.appendChild(el);
 		});
-	} else if (tab === "Emotes") {
+	}
+	if (tab.indexOf("emotes") >= 0) {
 		Object.keys(emodata.emotes).forEach(function(eid) {
 			let el = document.createElement('div');
 			el.className = 'xa-em-emote';
 			let arg = emodata.emotes[eid];
+
+			el.setAttribute('title', `:${eid}:`);
+			el.innerHTML = `<img src="${arg}">`;
+
+			list.appendChild(el);
+		});
+	}
+	if (tab.indexOf("new") >= 0) {
+		Object.keys(emodata.new).forEach(function(eid) {
+			let el = document.createElement('div');
+			el.className = 'xa-em-emote';
+			let arg = emodata.new[eid];
 
 			el.setAttribute('title', `:${eid}:`);
 			el.innerHTML = `<img src="${arg}">`;
@@ -216,6 +236,7 @@ window.addEventListener("DOMContentLoaded", () => {
 		.then((response) => response.json()) // and the response we get is in json format
 		.then((data) => {
 			emodata = data;
+			console.log(data);
 			buildList();
 	});
 });
