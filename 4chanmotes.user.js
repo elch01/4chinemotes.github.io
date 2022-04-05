@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        4chan(X too) Emotes
 // @namespace   4chanmotes
-// @version     0.5.7
+// @version     0.5.8
 // @description 2022 April Fool's 4chan (X too) permanent support
 // @match       *://*.4chan.org/*
 // @match       *://*.4channel.org/*
