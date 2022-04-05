@@ -5,15 +5,119 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Emote List</title>
+	<style>
+		#xa-em {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
 
+#xa-em-panel {
+  background: #a9acb5;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  box-shadow: 0 0 32px #2e3b4dd9;
+  pointer-events: all;
+  position: relative;
+  font-family: Arial, sans-serif;
+  user-select: none;
+  color: #000;
+}
+
+#xa-em-h {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
+  margin-top: 4px;
+}
+
+#xa-em-x {
+  font-size: 12px;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+}
+#xa-em-x:hover {
+  color: #fff;
+}
+
+#xa-em-l {
+  display: flex;
+  max-height: 80vh;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+#xa-em-i {
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  line-height: 16px;
+  margin-bottom: 10px;
+}
+
+.xa-em-emote {
+  width: 32px;
+  height: 32px;
+  background: #dfe2e6;
+  margin: 2px;
+  overflow: hidden;
+  font-size: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+.xa-em-emote > * {
+  pointer-events: none;
+}
+
+.xae {
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+abbr[data-tip] {
+  border-bottom: none !important;
+  cursor: inherit !important;
+  text-decoration: none !important;
+}
+
+#emote-select {
+  cursor: pointer;
+  float: right;
+  height: 16px;
+}
+	</style>
 </head>
 <body>
-	<h1>Current Emotes:</h1>
-	<div id="list"></div>
+	<h1>Current EmoteMenu</h1>
+	<div id="xa-em-panel">
+		<div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div>
+		<div id="xa-em-l"></div>
+		<div id="xa-em-i"></div>
+	</div>
 	<script>
 		// Storing json data in a variable
-		const localJsonFile = "/emote_list.json";
-		const list = document.getElementById('list');
+		const localJsonFile = "https://4chanmotes.github.io/emote_list.json";
+		const list = document.getElementById('xa-em-l');
+
+		/* This is the amount of emotes/emojis per line on the menu */
+		const emote_cols = 13;
+		document.getElementById('xa-em-panel').style.width = (36 * emote_cols + 12) + "px";
+
+		/* This is the maximum emotes/emojis per post, all other matches are removed
+			this doesn't limit emotes posted, only seen*/
+		const max_emotes = 9;
+		document.getElementById('xa-em-i').innerHTML = "Please do not use more than " + max_emotes + " as they will not show up";
 
 		// The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed,
 		// without waiting for stylesheets, images, and subframes to finish loading.
@@ -23,19 +127,23 @@
 				.then((response) => response.json()) // and the response we get is in json format
 				.then((data) => {
 				Object.keys(data.emoji).forEach(function(eid) {
-					let el = document.createElement('p');
+					let el = document.createElement('div');
+					el.className = 'xa-em-emote';
 					let arg = data.emoji[eid];
 
-					el.innerHTML = `<span>${arg}</span> :${eid}:`;
+					el.setAttribute('title', `:${eid}:`);
+					el.innerHTML = `<span>${arg}</span>`;
 
 					list.appendChild(el);
 				});
 
 				Object.keys(data.emotes).forEach(function(eid) {
-					let el = document.createElement('p');
+					let el = document.createElement('div');
+					el.className = 'xa-em-emote';
 					let arg = data.emotes[eid];
 
-					el.innerHTML = `<img src="${arg}"> :${eid}:`;
+					el.setAttribute('title', `:${eid}:`);
+					el.innerHTML = `<img src="${arg}">`;
 
 					list.appendChild(el);
 				});

@@ -84,7 +84,7 @@ var EmoteMenu = {
         self.open(); // Opens menu
       }
       else if (com === 'use-emote') {
-        self.insertEmote(t.getAttribute('data-tip')); // inserts emote on reply
+        self.insertEmote(t.getAttribute('title')); // inserts emote on reply
       }
 
       return;
@@ -130,7 +130,7 @@ var EmoteMenu = {
 
       let arg = emoji[eid];
 
-      el.setAttribute('data-tip', `:${eid}:`);
+      el.setAttribute('title', `:${eid}:`);
       el.innerHTML = `<span>${arg}</span>`;
 
       list.appendChild(el);
@@ -144,7 +144,7 @@ var EmoteMenu = {
 
       let arg = emotes[eid];
 
-      el.setAttribute('data-tip', `:${eid}:`);
+      el.setAttribute('title', `:${eid}:`);
       el.innerHTML = `<img src="${emotes_url}${arg}">`;
 
       list.appendChild(el);
@@ -433,14 +433,14 @@ function EmotePostParsing(postContainer) {
           if (i > max_emotes || disable_all_emotes) { // After max all others removed
             return "";
           }
-          return `<img class="xae" data-xa-cmd="use-emote" data-tip="${m}" title="${m}" src="${emotes_url}${emotes[m.split(':')[1]]}">`})
+          return `<img class="xae" data-xa-cmd="use-emote" title="${m}" src="${emotes_url}${emotes[m.split(':')[1]]}">`})
         .replace(re_emoji, function(m) {
           /* Emoji character, title for tooltip, data- to use like in menu */
           i++;
           if (i > max_emotes || disable_all_emotes) { // After max all others removed
             return "";
           }
-          return `<abbr class="xae" data-xa-cmd="use-emote" data-tip="${m}" title="${m}">${emoji[m.split(':')[1]]}</abbr>`});
+          return `<abbr class="xae" data-xa-cmd="use-emote" title="${m}">${emoji[m.split(':')[1]]}</abbr>`});
 
   // This checks the name too
   //name.innerHTML = name.innerHTML.replace(/<wbr>/g, '').replace(re_emoji, function(m) {return `<span class="xae">${emoji[m.split(':')[1]]}</span>`})
