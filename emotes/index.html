@@ -22,7 +22,7 @@
   background: #a9acb5;
   padding: 6px;
   box-sizing: border-box;
-  border-radius: 0 8px 8px 8px;
+  border-radius: 8px;
   /*box-shadow: 0 0 32px #2e3b4dd9;*/
   pointer-events: all;
   position: relative;
@@ -62,7 +62,6 @@
   font-size: 14px;
   font-family: sans-serif;
   line-height: 16px;
-  /*margin-bottom: 10px;*/
 }
 
 .xa-em-emote {
@@ -100,30 +99,42 @@ abbr[title] {
 #xa-em-tabs {
 	margin: 0;
 	padding: 0;
-	top: -21px;
-	left: 0;
+	top: 10px;/* -21px;*/
+	left: 9px;
+	width: 100%;
 	list-style: none;
+	display: flex;
 	position: absolute;
 }
 
 .xa-em-tabitem {
-	background: rgba(169, 172, 181, 0.50);
-	height: 20px;
-	padding: 3px 6px 6px;
+	/*background: rgb(169, 172, 181);*/
+	border-radius: 3px;
+	border: 1px solid #777;
+	padding: 1px 4px;
 	float: left;
-	border-radius: 4px 4px 0 0;
-	margin-right: 5px;
+	margin-right: 6px;
 }
+.xa-em-tabitem:hover {
+	border: 2px solid #444;
+	padding: 0 3px;
+}
+.xa-em-tabitem.selected {
+	border: 2px solid #666;
+	padding: 0 3px;
+}
+
 	</style>
 </head>
 <body>
 	<h1>Current EmoteMenu</h1>
 	<div id="xa-em-panel">
 		<ul id="xa-em-tabs">
-			<li class="xa-em-tabitem">Emojis</li>
+			<li class="xa-em-tabitem selected">Emoji</li>
 			<li class="xa-em-tabitem">Emotes</li>
+			<li class="xa-em-tabitem">New</li>
 		</ul>
-		<!--div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div-->
+		<div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div>
 		<div id="xa-em-l"></div>
 		<div id="xa-em-i"></div>
 	</div>
@@ -134,49 +145,80 @@ abbr[title] {
 		:nigra: lol nigers
 	</p>
 	<script>
-		// Storing json data in a variable
-		const localJsonFile = "https://4chanmotes.github.io/emote_list.json";
-		const list = document.getElementById('xa-em-l');
+// Storing json data in a variable
+const localJsonFile = "https://4chanmotes.github.io/emote_list.json";
+const list = document.getElementById('xa-em-l');
 
-		/* This is the amount of emotes/emojis per line on the menu */
-		const emote_cols = 13;
-		document.getElementById('xa-em-panel').style.width = (36 * emote_cols + 12) + "px";
+/* This is the amount of emotes/emojis per line on the menu */
+const emote_cols = 13;
+document.getElementById('xa-em-panel').style.width = (36 * emote_cols + 12) + "px";
 
-		/* This is the maximum emotes/emojis per post, all other matches are removed
-			this doesn't limit emotes posted, only seen*/
-		const max_emotes = 9;
-		document.getElementById('xa-em-i').innerHTML = "Please do not use more than " + max_emotes + " as they will not show up";
+/* This is the maximum emotes/emojis per post, all other matches are removed
+	this doesn't limit emotes posted, only seen*/
+const max_emotes = 9;
+document.getElementById('xa-em-i').innerHTML = "Please do not use more than " + max_emotes + " as they will not show up";
 
-		// The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed,
-		// without waiting for stylesheets, images, and subframes to finish loading.
-		window.addEventListener("DOMContentLoaded", () => {
-			// Make fetch request to local.json file
-			fetch(localJsonFile)
-				.then((response) => response.json()) // and the response we get is in json format
-				.then((data) => {
-				Object.keys(data.emoji).forEach(function(eid) {
-					let el = document.createElement('div');
-					el.className = 'xa-em-emote';
-					let arg = data.emoji[eid];
+let emodata;
 
-					el.setAttribute('title', `:${eid}:`);
-					el.innerHTML = `<span>${arg}</span>`;
+document.addEventListener("click", function(e) {
+	let t/*arget*/;
 
-					list.appendChild(el);
-				});
+	if (e.which != 1 || e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+		return;
+	}
 
-				Object.keys(data.emotes).forEach(function(eid) {
-					let el = document.createElement('div');
-					el.className = 'xa-em-emote';
-					let arg = data.emotes[eid];
+	if ((t = e.target) == document) {
+		return;
+	}
 
-					el.setAttribute('title', `:${eid}:`);
-					el.innerHTML = `<img src="${arg}">`;
+	if (t.classList.contains("xa-em-tabitem") && !t.classList.contains("selected")) {
+		document.querySelector(".xa-em-tabitem.selected").className = "xa-em-tabitem";
+		t.className += " selected";
+		buildList();
+	}
+});
 
-					list.appendChild(el);
-				});
-			});
+function buildList() {
+	let tab = document.querySelector(".xa-em-tabitem.selected").textContent;
+
+	list.innerHTML = '';
+	
+	if (tab === "Emoji") {
+		Object.keys(emodata.emoji).forEach(function(eid) {
+			let el = document.createElement('div');
+			el.className = 'xa-em-emote';
+			let arg = emodata.emoji[eid];
+
+			el.setAttribute('title', `:${eid}:`);
+			el.innerHTML = `<span>${arg}</span>`;
+
+			list.appendChild(el);
 		});
+	} else if (tab === "Emotes") {
+		Object.keys(emodata.emotes).forEach(function(eid) {
+			let el = document.createElement('div');
+			el.className = 'xa-em-emote';
+			let arg = emodata.emotes[eid];
+
+			el.setAttribute('title', `:${eid}:`);
+			el.innerHTML = `<img src="${arg}">`;
+
+			list.appendChild(el);
+		});
+	}
+}
+
+// The DOMContentLoaded event fires when the initial HTML document has been completely loaded and parsed,
+// without waiting for stylesheets, images, and subframes to finish loading.
+window.addEventListener("DOMContentLoaded", () => {
+	// Make fetch request to local.json file
+	fetch(localJsonFile)
+		.then((response) => response.json()) // and the response we get is in json format
+		.then((data) => {
+			emodata = data;
+			buildList();
+	});
+});
 	</script>
 </body>
 </html>

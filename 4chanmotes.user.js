@@ -313,13 +313,10 @@ function swapNodes(temp, n2) {
 */
 function EmotePostParsing(postContainer) {
   var message = postContainer.getElementsByClassName("post")[0].getElementsByClassName("postMessage")[0];
-  //var name = postContainer.getElementsByClassName("post")[0].getElementsByClassName("name")[1];
 
   var temp = document.createElement('div');
   var quote_array = [];
-  var quotes = message.querySelectorAll(event_classes);
-  // var quotes = message.getElementsByTagName('a');
-  //el.setAttribute('data-tip', `:${eid}:`);
+  var quotes = message.querySelectorAll('a:not(a *)');
 
   if (quotes.length) {
     for (let alink of quotes) {
@@ -350,10 +347,6 @@ function EmotePostParsing(postContainer) {
           }
           return `<abbr class="xae" data-xa-cmd="use-emote" title="${m}">${emoji[m.split(':')[1]]}</abbr>`});
 
-  // This checks the name too
-  //name.innerHTML = name.innerHTML.replace(/<wbr>/g, '').replace(re_emoji, function(m) {return `<span class="xae">${emoji[m.split(':')[1]]}</span>`})
-  //      .replace(re_emote, function(m) {return `<img class="xae" src="${emotes_url}${emotes[m.split(':')[1]]}">`});
-
   // Refresh
   quotes = message.querySelectorAll('.tobeswitched');
 
@@ -367,7 +360,7 @@ function EmotePostParsing(postContainer) {
 }
 
 /* These are all(maybe) the 4chanX classes that contain event listeners */
-const event_classes = ".quotelink, .embedder, .audio, .bitchute, .clyp, .dailymotion, .gfycat, .gist, .image, .installgentoo, .liveleak, .pastebin, .peertube, .soundcloud, .streamable, .twitchtv, .twitter, .video, .vidlii, .vimeo, .vine, .vocaroo, .youtube"
+//const event_classes = ".quotelink, .embedder, .audio, .bitchute, .clyp, .dailymotion, .gfycat, .gist, .image, .installgentoo, .liveleak, .pastebin, .peertube, .soundcloud, .streamable, .twitchtv, .twitter, .video, .vidlii, .vimeo, .vine, .vocaroo, .youtube"
 
 /* This is all the css used to make the menu and others */
 const css_to_add = `
