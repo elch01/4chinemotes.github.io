@@ -276,15 +276,6 @@ abbr[data-tip] {
   }
 }
 
-/* swaps two elements, temp requires a parent */
-function swapNodes(temp, n2) {
-  var dive = temp.parentNode;
-
-  n2.insertAdjacentElement('afterend', temp);
-
-  dive.appendChild(n2);
-}
-
 /* Userscript-dependent request, ignores CORS(Cross Origin) 
     Gets JSON and starts the EmoteMenu*/
 setTimeout(function() {
@@ -393,6 +384,15 @@ function parseOriginalPosts() {
   });
 }
 
+/* swaps two elements, temp requires a parent */
+function swapNodes(temp, n2) {
+  var dive = temp.parentNode;
+
+  n2.insertAdjacentElement('afterend', temp);
+
+  dive.appendChild(n2);
+}
+
 // parses all new posts
 /* What code is doing: 
     4chan messages are blockquotes with text and raw html mixed
@@ -409,14 +409,16 @@ function EmotePostParsing(postContainer) {
 
   var temp = document.createElement('div');
   var quote_array = [];
-  var quotes = message.getElementsByTagName('a');
+  var quotes = message.querySelectorAll('.quotelink');
+  // var quotes = message.getElementsByTagName('a');
+  //el.setAttribute('data-tip', `:${eid}:`);
 
   if (quotes.length) {
     for (let alink of quotes) {
       var clone = document.createElement('a');
       temp.appendChild(clone);
       swapNodes(clone, alink);
-      quote_array.push(alink); // saves original quote
+      quote_array.push([clone, alink]); // saves original quote
     }
   }
 
@@ -443,13 +445,10 @@ function EmotePostParsing(postContainer) {
   //name.innerHTML = name.innerHTML.replace(/<wbr>/g, '').replace(re_emoji, function(m) {return `<span class="xae">${emoji[m.split(':')[1]]}</span>`})
   //      .replace(re_emote, function(m) {return `<img class="xae" src="${emotes_url}${emotes[m.split(':')[1]]}">`});
 
-  // Refresh
-  quotes = message.getElementsByTagName('a');
-
   // Swap back
   if (quotes.length) {
-    for (i = 0; i < quotes.length; i++) {
-      swapNodes(quote_array[i], quotes[i]);
+    for (i = 0; i < quote_array.length; i++) {
+      swapNodes(quote_array[i][1], quote_array[i][0]);
     }
   }
   temp.remove();
