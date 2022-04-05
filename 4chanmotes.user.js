@@ -179,99 +179,7 @@ var EmoteMenu = {
   addCSS: function() {
     let style = document.createElement('style');
     style.setAttribute('type', 'text/css');
-    style.textContent = `
-#xa-em {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-#xa-em-panel {
-  background: #a9acb5;
-  width: ${36 * emote_cols + 12}px;
-  padding: 6px;
-  box-sizing: border-box;
-  border-radius: 16px;
-  box-shadow: 0 0 32px #2e3b4dd9;
-  pointer-events: all;
-  position: relative;
-  font-family: Arial, sans-serif;
-  user-select: none;
-  color: #000;
-}
-
-#xa-em-h {
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 6px;
-  margin-top: 4px;
-}
-
-#xa-em-x {
-  font-size: 12px;
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  cursor: pointer;
-}
-#xa-em-x:hover {
-  color: #fff;
-}
-
-#xa-em-l {
-  display: flex;
-  max-height: 80vh;
-  flex-wrap: wrap;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-#xa-em-i {
-  font-size: 12px;
-  font-family: Arial, sans-serif;
-  line-height: 16px;
-  margin-bottom: 10px;
-}
-
-.xa-em-emote {
-  width: 32px;
-  height: 32px;
-  background: #dfe2e6;
-  margin: 2px;
-  overflow: hidden;
-  font-size: 22px;
-  text-align: center;
-  cursor: pointer;
-}
-.xa-em-emote > * {
-  pointer-events: none;
-}
-
-.xae {
-  cursor: pointer;
-  user-select: none;
-  font-size: 18px;
-}
-
-abbr[data-tip] {
-  border-bottom: none !important;
-  cursor: inherit !important;
-  text-decoration: none !important;
-}
-
-#emote-select {
-  cursor: pointer;
-  float: right;
-  height: 16px;
-}
-`;
+    style.textContent = css_to_add;
     document.head.appendChild(style);
   }
 }
@@ -458,3 +366,114 @@ function EmotePostParsing(postContainer) {
   temp.remove();
 }
 
+/* This is all the css used to make the menu and others */
+const css_to_add = `
+#xa-em {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+#xa-em-panel {
+  background: #a9acb5;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 0 8px 8px 8px;
+  /*box-shadow: 0 0 32px #2e3b4dd9;*/
+  pointer-events: all;
+  position: relative;
+  font-family: Arial, sans-serif;
+  user-select: none;
+  color: #000;
+}
+
+#xa-em-h {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
+  margin-top: 4px;
+}
+
+#xa-em-x {
+  font-size: 12px;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+}
+#xa-em-x:hover {
+  color: #fff;
+}
+
+#xa-em-l {
+  display: flex;
+  max-height: 75vh;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+#xa-em-i {
+  font-size: 14px;
+  font-family: sans-serif;
+  line-height: 16px;
+  /*margin-bottom: 10px;*/
+}
+
+.xa-em-emote {
+  width: 32px;
+  height: 32px;
+  background: #dfe2e6;
+  margin: 2px;
+  overflow: hidden;
+  font-size: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+.xa-em-emote > * {
+  pointer-events: none;
+}
+
+.xae {
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+abbr[title] {
+  border-bottom: none !important;
+  cursor: inherit !important;
+  text-decoration: none !important;
+}
+
+#emote-select {
+  cursor: pointer;
+  float: right;
+  height: 16px;
+}
+
+#xa-em-tabs {
+  margin: 0;
+  padding: 0;
+  top: -21px;
+  left: 0;
+  list-style: none;
+  position: absolute;
+}
+
+.xa-em-tabitem {
+  background: rgba(169, 172, 181, 0.50);
+  height: 20px;
+  padding: 3px 6px 6px;
+  float: left;
+  border-radius: 4px 4px 0 0;
+  margin-right: 5px;
+}
+`;

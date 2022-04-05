@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Emote List</title>
 	<style>
-		#xa-em {
+#xa-em {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,8 +22,8 @@
   background: #a9acb5;
   padding: 6px;
   box-sizing: border-box;
-  border-radius: 16px;
-  box-shadow: 0 0 32px #2e3b4dd9;
+  border-radius: 0 8px 8px 8px;
+  /*box-shadow: 0 0 32px #2e3b4dd9;*/
   pointer-events: all;
   position: relative;
   font-family: Arial, sans-serif;
@@ -52,17 +52,17 @@
 
 #xa-em-l {
   display: flex;
-  max-height: 80vh;
+  max-height: 75vh;
   flex-wrap: wrap;
   overflow-y: auto;
   scrollbar-width: thin;
 }
 
 #xa-em-i {
-  font-size: 12px;
-  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-family: sans-serif;
   line-height: 16px;
-  margin-bottom: 10px;
+  /*margin-bottom: 10px;*/
 }
 
 .xa-em-emote {
@@ -85,7 +85,7 @@
   font-size: 18px;
 }
 
-abbr[data-tip] {
+abbr[title] {
   border-bottom: none !important;
   cursor: inherit !important;
   text-decoration: none !important;
@@ -96,15 +96,43 @@ abbr[data-tip] {
   float: right;
   height: 16px;
 }
+
+#xa-em-tabs {
+	margin: 0;
+	padding: 0;
+	top: -21px;
+	left: 0;
+	list-style: none;
+	position: absolute;
+}
+
+.xa-em-tabitem {
+	background: rgba(169, 172, 181, 0.50);
+	height: 20px;
+	padding: 3px 6px 6px;
+	float: left;
+	border-radius: 4px 4px 0 0;
+	margin-right: 5px;
+}
 	</style>
 </head>
 <body>
 	<h1>Current EmoteMenu</h1>
 	<div id="xa-em-panel">
-		<div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div>
+		<ul id="xa-em-tabs">
+			<li class="xa-em-tabitem">Emojis</li>
+			<li class="xa-em-tabitem">Emotes</li>
+		</ul>
+		<!--div id="xa-em-h">Emotes<div id="xa-em-x">Close</div></div-->
 		<div id="xa-em-l"></div>
 		<div id="xa-em-i"></div>
 	</div>
+	<p>
+		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:">
+		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:" style="height: 32px;">
+		<img src="https://static.heyuri.net/koko/image/emote/nigra.gif" title=":nigra:" style="height: 32px;image-rendering: -moz-crisp-edges;">
+		:nigra: lol nigers
+	</p>
 	<script>
 		// Storing json data in a variable
 		const localJsonFile = "https://4chanmotes.github.io/emote_list.json";
