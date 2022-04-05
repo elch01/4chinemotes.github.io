@@ -317,14 +317,14 @@ function EmotePostParsing(postContainer) {
 
   var temp = document.createElement('div');
   var quote_array = [];
-  var quotes = message.querySelectorAll('.quotelink');
+  var quotes = message.querySelectorAll(event_classes);
   // var quotes = message.getElementsByTagName('a');
   //el.setAttribute('data-tip', `:${eid}:`);
 
   if (quotes.length) {
     for (let alink of quotes) {
       var clone = document.createElement('a');
-      clone.setAttribute('class', 'quotelink')
+      clone.setAttribute('class', 'tobeswitched')
       temp.appendChild(clone);
       swapNodes(clone, alink);
       quote_array.push(alink); // saves original quote
@@ -355,7 +355,7 @@ function EmotePostParsing(postContainer) {
   //      .replace(re_emote, function(m) {return `<img class="xae" src="${emotes_url}${emotes[m.split(':')[1]]}">`});
 
   // Refresh
-  quotes = message.querySelectorAll('.quotelink');
+  quotes = message.querySelectorAll('.tobeswitched');
 
   // Swap back
   if (quotes.length) {
@@ -365,6 +365,9 @@ function EmotePostParsing(postContainer) {
   }
   temp.remove();
 }
+
+/* These are all(maybe) the 4chanX classes that contain event listeners */
+const event_classes = ".quotelink, .embedder, .audio, .bitchute, .clyp, .dailymotion, .gfycat, .gist, .image, .installgentoo, .liveleak, .pastebin, .peertube, .soundcloud, .streamable, .twitchtv, .twitter, .video, .vidlii, .vimeo, .vine, .vocaroo, .youtube"
 
 /* This is all the css used to make the menu and others */
 const css_to_add = `
