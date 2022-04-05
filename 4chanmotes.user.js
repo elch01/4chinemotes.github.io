@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name        4chan(X too) Emotes
 // @namespace   4chanmotes
-// @version     0.5.6
+// @version     0.5.7
 // @description 2022 April Fool's 4chan (X too) permanent support
 // @match       *://*.4chan.org/*
 // @match       *://*.4channel.org/*
 // @run-at      document-idle
 // @grant       GM_xmlhttpRequest
 // @grant       GM.xmlHttpRequest
-// @updateURL   https://4chanmotes.neocities.org/4chanmotes.meta.js
-// @downloadURL https://4chanmotes.neocities.org/4chanmotes.user.js
-// @icon        https://4chanmotes.neocities.org/emotes/kurisuprised.png
+// @updateURL   https://4chanmotes.github.io/4chanmotes.meta.js
+// @downloadURL https://4chanmotes.github.io/4chanmotes.user.js
+// @icon        https://4chanmotes.github.io/emotes/kurisuprised.png
 // ==/UserScript==
 
 /* Removes all :emoteshit: if true*/
@@ -30,10 +30,13 @@ const emote_cols = 13;
 /* The url with the emotes, duh
     4chan one is https://s.4cdn.org/image/emotes/
     not recommended because it has no custom ones */
-const emotes_url = "https://4chanmotes.neocities.org/emotes/";
+const emotes_url = "https://4chanmotes.github.io/emotes/";
 
 /* JSON file with all emoji/emote names and respective filenames */
-const emotes_json = "https://4chanmotes.neocities.org/emotes/emote_list.json";
+const emotes_json = "https://4chanmotes.github.io/emote_list.json";
+
+/* This is the menu button, if you want to customize it then change this */
+const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
 
 // stores the dictionaries and regex
 let using4chanx, re_emoji, re_emote, emoji, emotes;
@@ -318,11 +321,8 @@ setTimeout(function() {
 function Xchanevents() {
   // Injects EmoteMenu on 4chanX quick reply
   document.addEventListener("QRDialogCreation", function() {
-    // EmoteMenu button
-    const menu = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`;
-
     console.log("QR opened - using 4chanx");
-
+    // EmoteMenu button
     if (!document.getElementById("emote-select")) {
       if (!document.querySelector("#qr select[data-name=thread]")) {
         // Put button next to Option/Subject
@@ -360,8 +360,6 @@ function Nchanevents() {
         we must repeatedly check whether the reply is open or not */
   setInterval(function () {
     // EmoteMenu button
-    const menu = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`;
-
     var e = document.getElementById("emote-select");
     var qr = (document.getElementById("t-help") ? document.getElementById("t-help") : document.getElementById("qrClose"));
     if (!e && qr) {
