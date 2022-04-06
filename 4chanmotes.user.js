@@ -39,10 +39,10 @@ const emote_cols = 13;
 /* The url with the emotes, duh
     4chan one is https://s.4cdn.org/image/emotes/
     not recommended because it has no custom ones */
-const emotes_url = "https://elch01.github.io/4chanemotes.github.io/emotes/";
+const emotes_url = "https://elch01.github.io/4chinemotes.github.io/emotes/";
 
 /* JSON file with all emoji/emote names and respective filenames */
-const emotes_json = "https://elch01.github.io/4chanemotes.github.io/emote_list.json";
+const emotes_json = "https://elch01.github.io/4chinemotes.github.io/emote_list.json";
 
 /* This is the menu button, if you want to customize it then change this */
 const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
