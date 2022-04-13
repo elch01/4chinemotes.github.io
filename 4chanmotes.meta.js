@@ -17,7 +17,7 @@
 // @grant       GM.listValues
 // @grant       GM.deleteValue
 // @grant       GM.xmlHttpRequest
-// @updateURL   https://4chanmotes.github.io/4chanmotes.meta.js
-// @downloadURL https://4chanmotes.github.io/4chanmotes.user.js
-// @icon        https://4chanmotes.github.io/emotes/kurisuprised.png
+// @updateURL   https://elch01.github.io/4chinemotes.github.io/4chanmotes.meta.js
+// @downloadURL https://elch01.github.io/4chinemotes.github.io/4chanmotes.user.js
+// @icon        https://elch01.github.io/4chinemotes.github.io/emotes/yotsubaexcited.png
 // ==/UserScript==
