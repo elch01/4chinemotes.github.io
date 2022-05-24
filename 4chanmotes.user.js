@@ -45,7 +45,7 @@ const emotes_url = "https://elch01.github.io/4chinemotes.github.io/emotes/";
 const emotes_json = "https://elch01.github.io/4chinemotes.github.io/emote_list.json";
 
 /* This is the menu button, if you want to customize it then change this */
-const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}kurisuprised.png">`
+const menu_emote = `<img id="emote-select" data-xa-cmd="open" src="${emotes_url}yotsubaexcited.png">`
 
 // stores the dictionaries and regex
 let using4chanx, re_emoji, re_emote, emotes_data;
